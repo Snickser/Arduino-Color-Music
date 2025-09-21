@@ -20,8 +20,8 @@ byte brC = 6;         // brightnes 1 maximum (for encoder)
 float Br;             // HSL Max 0.5/brC = level
 unsigned int modeR = 180;     // cyclical change of modes in seconds (for first time)
 byte modeL = 1;
-float cLim = 768;    // color for 1/random() 3,6,12,24,48,96,192,384,768
-unsigned int rainbow = 48;
+float cLim = 200;    // color for 1/random() 3,6,12,24,48,96,192,384,768
+unsigned int rainbow = 12;
 
 ////
 // <
@@ -73,17 +73,19 @@ void setup() {
 
   Br = Brightness(brC);
 
-
+//Mode=5;
 /*
   while(1){
     for(byte i=0;i<PixelCount;i++){
-      RgbColor color = HsbColor(1/3., 1, Br);
-//      RgbColor color = RgbColor(0,255,0);
+      RgbColor color = HsbColor(1-i/192., 1, Br);
+//      RgbColor color = RgbColor(255-i,i,0);
        strip.SetPixelColor(i, color);
+       Serial.println(1-i/192.,6);
     }
       strip.Show();
+      delay(10000);
   }
-// */
+*/
 
 }
 
@@ -134,6 +136,7 @@ void loop() {
         m3(0);
         break;
       case 1:
+        cs = random(150,400);
         m0();
         break;
       default:
@@ -166,7 +169,7 @@ void loop() {
     modeR = random(29,300);
     modeL = Mode;
     while( Mode == modeL ) Mode = random(1,8);
-    rainbow = random(6,PixelCount);
+    rainbow = random(6, cLim);
     nRB=1;
     Serial.print(Mode); Serial.print(" "); Serial.println(modeR);
   } 
@@ -293,7 +296,7 @@ void m5(byte x) {
     stp+=1;
     if(stp>rainbow) stp=0; 
     float nn = Map(stp, 0, rainbow, 1, 0);
- //Serial.println(nn,3);
+ Serial.println(nn,3);
     RgbColor res = HsbColor(nn, 1, Br);
     if(x==0){
       strip.ShiftRight(1);
